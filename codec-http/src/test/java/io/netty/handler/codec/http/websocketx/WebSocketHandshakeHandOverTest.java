@@ -49,7 +49,11 @@ public class WebSocketHandshakeHandOverTest {
 
     private final class CloseNoOpServerProtocolHandler extends WebSocketServerProtocolHandler {
         CloseNoOpServerProtocolHandler(String websocketPath) {
-            super(websocketPath, null, false);
+            super(WebSocketServerProtocolConfig.newBuilder()
+                .websocketPath(websocketPath)
+                .allowExtensions(false)
+                .sendCloseFrame(null)
+                .build());
         }
 
         @Override
@@ -111,7 +115,7 @@ public class WebSocketHandshakeHandOverTest {
         assertTrue(serverReceivedHandshake);
         assertNotNull(serverHandshakeComplete);
         assertEquals("/test", serverHandshakeComplete.requestUri());
-        assertEquals(8, serverHandshakeComplete.requestHeaders().size());
+        assertEquals(7, serverHandshakeComplete.requestHeaders().size());
         assertEquals("test-proto-2", serverHandshakeComplete.selectedSubprotocol());
 
         // Transfer the handshake response and the websocket message to the client
